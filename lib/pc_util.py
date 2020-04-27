@@ -280,10 +280,14 @@ def read_ply_xyzrgbnormal(filename):
         vertices[:,5] = plydata['vertex'].data['blue']
 
         # compute normals
-        xyz = np.array([[x, y, z] for x, y, z, _, _, _, _ in plydata["vertex"].data])
-        face = np.array([f[0] for f in plydata["face"].data])
-        nxnynz = compute_normal(xyz, face)
-        vertices[:,6:] = nxnynz
+        if (len(plydata["vertex"][0]) == 10):
+         xyz = np.array([[nx, ny,nz] for _, _, _, _, _, _, nx, ny,nz,x in plydata["vertex"].data])
+         vertices[:,6:] = xyz
+        else:
+         xyz = np.array([[x, y, z] for x, y, z, _, _, _, _ in plydata["vertex"].data])
+         face = np.array([f[0] for f in plydata["face"].data])
+         nxnynz = compute_normal(xyz, face)
+         vertices[:,6:] = nxnynz
     return vertices
 
 def write_ply(points, filename, text=True):
